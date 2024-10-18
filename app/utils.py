@@ -10,7 +10,7 @@ def create_token(username: str, expired_time: None | datetime.timedelta = None) 
     if expired_time:
         exp = datetime.datetime.now(datetime.timezone.utc) +  expired_time
     else:
-        exp = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(DEFAULT_EXPIRED_TIME)
+        exp = datetime.datetime.now(datetime.timezone.utc) + DEFAULT_EXPIRED_TIME
     user_data = sub.copy()
     user_data.update({'exp': exp})
     token = jwt.encode(payload=user_data, key=JWT_SECRET_KEY, algorithm=ALGORITHM)

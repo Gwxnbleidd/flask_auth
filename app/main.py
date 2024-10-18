@@ -1,9 +1,10 @@
 from functools import wraps
-from flask import Flask, render_template, request, jsonify, make_response, redirect, url_for, flash
+from flask import Flask, jsonify, render_template, request, make_response, redirect, url_for, flash
 
-from utils import check_password, decode_token, create_token, hash_password, initial_data
-from config import FLASK_SECRET_KEY
+from utils import check_password, decode_token, create_token, initial_data
+from config import FLASK_SECRET_KEY, DEFAULT_EXPIRED_TIME
 from database import get_user_from_db
+from jwt import ExpiredSignatureError
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = FLASK_SECRET_KEY
@@ -16,9 +17,7 @@ def jwt_required(func):
             try:
                 current_user = decode_token(token)
                 return func(*args, **kwargs)
-            
-            except Exception as e:
-                print(e)
+            except ExpiredSignatureError:
                 return redirect(url_for('login'))
         return redirect(url_for('login'))
 
@@ -32,9 +31,9 @@ def login():
 
         if user:=get_user_from_db(login):
             if check_password(password.encode(), user[2]):
-                token = create_token(user[1])
+                token = create_token(user[1], DEFAULT_EXPIRED_TIME)
                 response = make_response(redirect(url_for('protected_resource')), 200)
-                response.set_cookie('jwt_token', token)
+                response.set_cookie('jwt_token', token, httponly=True, secure=True, max_age=DEFAULT_EXPIRED_TIME)
                 return response
             
             flash('Неверный пароль!')
@@ -48,10 +47,18 @@ def login_content():
     return render_template('login_form.html')
 
 @app.route('/protected', methods=['GET'])
-#@jwt_required
+@jwt_required
 def protected_resource():
     return render_template('main.html')
-    
+
+@app.route('/get_data', methods=['GET'])
+def get_list():
+    data = [
+        {"id": 1, "name": "Товар 1", "price": 100},
+        {"id": 2, "name": "Товар 2", "price": 150},
+        {"id": 3, "name": "Товар 3", "price": 200}
+        ]
+    return jsonify(data)
     
 if __name__=='__main__':
     # Заполним пользователями таблицу
