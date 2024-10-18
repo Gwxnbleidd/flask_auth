@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  flask:
+    container_name: flask_container
+    build: ./app
+    depends_on:
+      - db_prod
+    ports:
+      - 5000:5000
+    env_file:
+      - ./app/.env.docker
+
+  db_prod:
+    container_name: db_auth
+    image: postgres
+    environment:
+      POSTGRES_USER: dima
+      POSTGRES_PASSWORD: 1289
+      POSTGRES_DB: service
+    ports:
+      - 5433:5432
+

@@ -1,0 +1,16 @@
+{% extends 'base.html'%}
+
+{% block content %}
+{{ super() }}
+
+    <h1 >Авторизация</h1>
+    <div id="login-form"></div>
+    <script>
+        fetch('/get/login/content')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('login-form').innerHTML = html;
+            });
+    </script>
+
+    {% endblock %}

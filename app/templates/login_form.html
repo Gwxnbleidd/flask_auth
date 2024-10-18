@@ -1,0 +1,16 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% for msg in get_flashed_messages() %}
+<div class="flash">{{ msg }}</div>
+{% endfor %}
+<form method="POST" action="/login" class="form">
+    <div>
+        <label for="login" class="label">Имя пользователя:</label>
+        <input type="text" id="login" name="login" class="login-input" required>
+    </div>
+    <div>
+        <label for="password" class="label">Пароль:</label>
+        <input type="password" id="password" name="password" class="password-input" required>
+    </div>
+    <button type="submit" class="button">Войти</button>
+</form>
+

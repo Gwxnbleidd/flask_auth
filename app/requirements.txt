@@ -1,0 +1,6 @@
+Flask
+pyjwt
+bcrypt
+python-dotenv
+sqlalchemy
+psycopg

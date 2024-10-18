@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    {% block title -%}
+    {% if title %}
+        <title>{{ title }}</title>
+    {% else %}
+        <title> Задание 1</title>
+    {% endif %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    {% endblock %}
+</head>
+<body>
+    <div class="header">
+        Простой проект
+    </div>
+    {% block content -%}
+    
+    {% endblock -%}
+</body>
+</html>
